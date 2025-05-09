@@ -10,10 +10,10 @@ import (
 type CellState int
 
 const (
-	StateNone CellState = iota
-	StateOccupied
-	StateMissed
-	StateHit
+	StateNone     CellState = iota // 0
+	StateOccupied                  // 1
+	StateMissed                    // 2
+	StateHit                       // 3
 )
 
 type Board struct {

@@ -108,6 +108,9 @@ func Game() {
 	currBoard := board.InitializeBoard(size)
 	currBoard.PlaceShips([]int{5, 4, 3, 3, 2})
 
+	hitCount := 0
+	missCount := 0
+
 	for {
 		if currPlayer.GetAttemptsLeft() < 1 {
 			break
@@ -145,7 +148,23 @@ func Game() {
 			continue
 		}
 
-		currBoard.Attack(ship.Coordinate{X: xinput, Y: yinput})
+		state := currBoard.Attack(ship.Coordinate{X: xinput, Y: yinput})
+		feedback := ""
+		switch state {
+		case board.StateMissed:
+			missCount++
+			currPlayer.DecreaseAttempt()
+			feedback = "MISS!"
+		case board.StateHit:
+			hitCount++
+			feedback = "HIT!"
+		}
+
+		// print feedback + attempts left
+		fmt.Printf("\n %s  Attempts left: %d\n\n", feedback, currPlayer.GetAttemptsLeft())
+
+		// now print running stats
+		view.ShowStats(hitCount, missCount, currBoard)
 	}
 
 }

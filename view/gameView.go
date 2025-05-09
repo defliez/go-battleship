@@ -41,3 +41,19 @@ func ShowGrid(b *board.Board) {
 	}
 	fmt.Println()
 }
+
+func ShowStats(hitCount, missCount int, b *board.Board) {
+	total := hitCount + missCount
+	accuracy := 0.0
+	if total > 0 {
+		accuracy = float64(hitCount) / float64(total) * 100
+	}
+	sunk := 0
+	for _, s := range b.Ships {
+		if s.IsSunk() {
+			sunk++
+		}
+	}
+	fmt.Printf("Shots: %d  Hits: %d  Misses: %d  Accuracy: %.1f%%  Ships sunk: %d/%d\n\n",
+		total, hitCount, missCount, accuracy, sunk, len(b.Ships))
+}

@@ -7,12 +7,12 @@ type Player struct {
 func NewPlayer(attempts int) *Player {
 	return &Player{
 		totalAttempts: 0,
-		attemptsLeft: attempts,
+		attemptsLeft:  attempts,
 	}
 }
 
 func (p *Player) DecreaseAttempt() {
-	p.totalAttempts--
+	p.attemptsLeft--
 }
 
 func (p *Player) GetTotalAttempts() int {
