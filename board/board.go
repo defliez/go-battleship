@@ -7,19 +7,27 @@ import (
 	"valedv.com/battleship/ship"
 )
 
+type CellState int
+
+const (
+	StateNone CellState = iota
+	StateOccupied
+	StateMissed
+	StateHit
+)
+
 type Board struct {
-	Size  		int
-	Ships 		[]*ship.Ship
-	Grid		map[ship.Coordinate]bool
-	DisplayGrid map[ship.Coordinate]
+	Size  int
+	Ships []*ship.Ship
+	Grid  map[ship.Coordinate]CellState
 }
 
 func InitializeBoard(size int) *Board {
-	grid := make(map[ship.Coordinate]bool, size*size)
+	grid := make(map[ship.Coordinate]CellState, size*size)
 
 	for x := 0; x < size; x++ {
 		for y := 0; y < size; y++ {
-			grid[ship.Coordinate{X: x, Y: y}] = false
+			grid[ship.Coordinate{X: x, Y: y}] = StateNone
 		}
 	}
 	return &Board{
@@ -65,7 +73,7 @@ func (b *Board) PlaceShips(lengths []int) {
 
 func (b *Board) canPlace(coords []ship.Coordinate) bool {
 	for _, c := range coords {
-		if b.Grid[c] {
+		if b.Grid[c] == StateOccupied {
 			return false
 		}
 	}
@@ -74,9 +82,21 @@ func (b *Board) canPlace(coords []ship.Coordinate) bool {
 
 func (b *Board) addShip(coords []ship.Coordinate) {
 	for _, c := range coords {
-		b.Grid[c] = true
+		b.Grid[c] = StateOccupied
 	}
 	b.Ships = append(b.Ships, ship.NewShip(coords))
 }
 
-func GetBoard() (
+func (b *Board) Attack(c ship.Coordinate) CellState {
+	if st := b.Grid[c]; st != StateNone {
+		return st
+	}
+	for _, s := range b.Ships {
+		if s.Hit(c) {
+			b.Grid[c] = StateHit
+			return StateHit
+		}
+	}
+	b.Grid[c] = StateMissed
+	return StateMissed
+}
