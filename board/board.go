@@ -8,9 +8,10 @@ import (
 )
 
 type Board struct {
-	Size  int
-	Ships []*ship.Ship
-	Grid  map[ship.Coordinate]bool
+	Size  		int
+	Ships 		[]*ship.Ship
+	Grid		map[ship.Coordinate]bool
+	DisplayGrid map[ship.Coordinate]
 }
 
 func InitializeBoard(size int) *Board {
@@ -77,3 +78,5 @@ func (b *Board) addShip(coords []ship.Coordinate) {
 	}
 	b.Ships = append(b.Ships, ship.NewShip(coords))
 }
+
+func GetBoard() (
