@@ -9,6 +9,8 @@ import (
 
 	"valedv.com/battleship/board"
 	"valedv.com/battleship/player"
+	"valedv.com/battleship/ship"
+	"valedv.com/battleship/view"
 )
 
 var scanner = bufio.NewScanner(os.Stdin)
@@ -49,12 +51,12 @@ func InitializeGame() {
 		input, err := strconv.Atoi(inputStr)
 		if err != nil {
 			fmt.Println("Invalid input. You must enter a valid number.")
-			return
+			continue
 		}
 
 		if input < 1 {
 			fmt.Println("Invalid input. You must enter a number larger than 0")
-			return
+			continue
 		}
 		size = input
 		break
@@ -100,9 +102,50 @@ func InitializeGame() {
 }
 
 func Game() {
-	fmt.Printf("game has started!!!\noptions:\nsize: %d\ndifficulty: %d", size, difficulty)
+	fmt.Printf("game has started!!!\noptions:\nsize: %d\ndifficulty: %d \n\n", size, difficulty)
 
-	// currPlayer := player.NewPlayer(difficulty)
-	// currBoard := board.InitializeBoard(size)
+	currPlayer := player.NewPlayer(difficulty)
+	currBoard := board.InitializeBoard(size)
+	currBoard.PlaceShips([]int{5, 4, 3, 3, 2})
+
+	for {
+		if currPlayer.GetAttemptsLeft() < 1 {
+			break
+		}
+
+		view.ShowGrid(currBoard)
+
+		fmt.Println("Enter X coords: ")
+		scanner.Scan()
+		inputStr := strings.TrimSpace(scanner.Text())
+		xinput, err := strconv.Atoi(inputStr)
+
+		if err != nil {
+			fmt.Println("Invalid input. You must enter a valid number.")
+			continue
+		}
+
+		if xinput < 1 && xinput > size {
+			fmt.Println("Invalid input. You must enter a number that on the board")
+			continue
+		}
+
+		fmt.Println("Enter Y coords: ")
+		scanner.Scan()
+		inputStr = strings.TrimSpace(scanner.Text())
+		yinput, err := strconv.Atoi(inputStr)
+
+		if err != nil {
+			fmt.Println("Invalid input. You must enter a valid number.")
+			continue
+		}
+
+		if yinput < 1 && yinput > size {
+			fmt.Println("Invalid input. You must enter a number that on the board")
+			continue
+		}
+
+		currBoard.Attack(ship.Coordinate{X: xinput, Y: yinput})
+	}
 
 }

@@ -88,7 +88,7 @@ func (b *Board) addShip(coords []ship.Coordinate) {
 }
 
 func (b *Board) Attack(c ship.Coordinate) CellState {
-	if st := b.Grid[c]; st != StateNone {
+	if st := b.Grid[c]; st == StateHit || st == StateMissed {
 		return st
 	}
 	for _, s := range b.Ships {
